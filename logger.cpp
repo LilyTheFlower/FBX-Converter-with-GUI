@@ -23,6 +23,10 @@ int Logger::printLog(std::string logMessage){
 }
 
 void Logger::changeDirectory(std::string newDirectoryLocation){
+    newDirectoryLocation.append("\\");
+    std::string timeFileName = stringCurrentDateTime();
+    timeFileName.append(".txt");
+    newDirectoryLocation.append(timeFileName);
     logFile = fopen(newDirectoryLocation.c_str(), "w+");
     if(!logFile){
         //failed to open the file, notify the user via gui
