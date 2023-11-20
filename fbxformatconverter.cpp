@@ -1,7 +1,18 @@
 #include "fbxformatconverter.h"
 #include <fbxsdk.h>
-//#include <fbxsdk/fbxio/fbxiosettings.h>
-FBXFormatConverter::FBXFormatConverter(): FBXLog("\\logs") {
+#include <logger.h>
+
+
+Logger* FBXLog;
+FbxManager* lSdkManager;
+FbxScene* nullScene;
+
+//default values, reconfigured later
+int binaryID;
+int asciiID;
+
+FBXFormatConverter::FBXFormatConverter(){
+    FBXLog = new Logger("\\logs");
     // Create the FBX SDK manager
     lSdkManager = FbxManager::Create();
     //dummy scene to allow recognition of when an error has occured while still allowing for the same return type and no new error tracking classes or external objects
@@ -55,10 +66,10 @@ FbxScene* FBXFormatConverter::importFBX(std::string sourceLocation){
     //End Documentation Code
 
     if(!lImportStatus) {
-        FBXLog.printLog("Call to FbxImporter::Initialize() failed.\n");
+        FBXLog->printLog("Call to FbxImporter::Initialize() failed.\n");
         char* error = new char[200];
         sprintf(error, "Error returned: %s\n\n", lImporter->GetStatus().GetErrorString());
-        FBXLog.printLog(error);
+        FBXLog->printLog(error);
         return nullScene;
     }
     // Create a new scene so it can be populated by the imported file.
@@ -90,7 +101,7 @@ bool FBXFormatConverter::exportFBX(std::string destinationLocaiton, FbxScene* sc
     }else if(format.compare("ascii") == 0){
 
     }else{
-        FBXLog.printLog("unknown file format provided");
+        FBXLog->printLog("unknown file format provided");
         return false;
     }
     // Initialize the exporter.
@@ -118,7 +129,8 @@ int FBXFormatConverter::convertFile(std::string sourceLocation, std::string dest
         msg.append(sourceLocation);
         msg.append("Format requested: ");
         msg.append(format);
-        FBXLog.printLog(msg);
+        FBXLog->printLog(msg);
+        return -1;
     }
 
     if(exportFBX(destinationLocaiton, importedScene, format)){
@@ -126,18 +138,19 @@ int FBXFormatConverter::convertFile(std::string sourceLocation, std::string dest
         msg.append(format);
         msg.append(" to: ");
         msg.append("destinationLocation");
-        FBXLog.printLog(msg);
+        FBXLog->printLog(msg);
     }else{
         std::string msg = "";
         msg.append("FAILED TO EXPORT! Source Location: ");
         msg.append(sourceLocation);
         msg.append("Format requested: ");
         msg.append(format);
-        FBXLog.printLog(msg);
+        FBXLog->printLog(msg);
+        return -1;
     }
-
+    return 0;
 }
 
 bool FBXFormatConverter::isFBXFile(FBXFormatConverter::FBXFile *file){
-
+    return true;
 }
