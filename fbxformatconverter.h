@@ -19,7 +19,7 @@ class FBXFormatConverter
 public:
     FBXFormatConverter();
     static int convertFile(std::string sourceLocation, std::string destinationLocaiton, bool deleteOriginal, std::string format);
-    static bool isFBXFile(FBXFormatConverter::FBXFile *file);
+    static int isFBXFile(std::string sourceLocation);
     static std::string checkFormat();
 };
 
