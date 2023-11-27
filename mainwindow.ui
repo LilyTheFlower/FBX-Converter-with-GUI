@@ -20,7 +20,7 @@
       <x>10</x>
       <y>60</y>
       <width>761</width>
-      <height>391</height>
+      <height>371</height>
      </rect>
     </property>
    </widget>
@@ -51,33 +51,33 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>470</y>
+      <y>440</y>
       <width>101</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>Select All</string>
+     <string>Select Ascii</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>470</y>
+      <x>130</x>
+      <y>440</y>
       <width>101</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>Select None</string>
+     <string>Select Binary</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_2">
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>510</y>
+      <y>520</y>
       <width>641</width>
       <height>24</height>
      </rect>
@@ -87,7 +87,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>510</y>
+      <y>520</y>
       <width>111</width>
       <height>24</height>
      </rect>
@@ -114,7 +114,7 @@
      <rect>
       <x>10</x>
       <y>560</y>
-      <width>101</width>
+      <width>251</width>
       <height>24</height>
      </rect>
     </property>
@@ -122,30 +122,79 @@
      <string>Convert to ascii</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_6">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>560</y>
-      <width>101</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Convert to binary</string>
-    </property>
-   </widget>
    <widget class="QCheckBox" name="checkBox">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>470</y>
+      <x>650</x>
+      <y>440</y>
       <width>121</width>
       <height>22</height>
      </rect>
     </property>
     <property name="text">
      <string>Replace Originals</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_2">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>440</y>
+      <width>121</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enable Logging</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_7">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>480</y>
+      <width>111</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Log Folder</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_3">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>480</y>
+      <width>641</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_8">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>440</y>
+      <width>101</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select All</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_9">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>440</y>
+      <width>101</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select None</string>
     </property>
    </widget>
   </widget>

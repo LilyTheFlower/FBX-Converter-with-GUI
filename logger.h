@@ -7,7 +7,7 @@
 
 class Logger
 {
-    FILE* logFile;
+    std::string directoryLocation;
     std::string stringCurrentDateTime();
 public:
     bool logging = true;
