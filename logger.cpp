@@ -11,6 +11,9 @@ Logger::Logger(std::string directoryLocation){
 }
 
 int Logger::printLog(std::string logMessage){
+    if(!logging){
+        return 0;
+    }
     //print to the log file
     if(logFile){
         std::string msg = stringCurrentDateTime();

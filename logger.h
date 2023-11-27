@@ -10,6 +10,7 @@ class Logger
     FILE* logFile;
     std::string stringCurrentDateTime();
 public:
+    bool logging = true;
     Logger(std::string directoryLocation);
     int printLog(std::string logMessage);
     void changeDirectory(std::string newDirectoryLocation);
