@@ -16,6 +16,15 @@ public:
     ~MainWindow();
     bool notifyUser();
 
+private slots:
+    void on_sourceFolderPushButton_clicked();
+
+    void on_logFolderPushButton_clicked();
+
+    void on_destinationFolderPushButton_clicked();
+
+    void on_enableLoggingCheckbox_stateChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
 };

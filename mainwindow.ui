@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QListWidget" name="fbxFileListWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -24,7 +24,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="sourceFolderPushButton">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -37,7 +37,7 @@
      <string>Source Folder</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="sourceFolderLineEdit">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -47,7 +47,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="selectAsciiPushButton">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -60,7 +60,7 @@
      <string>Select Ascii</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="selectBinaryPushButton">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -73,7 +73,7 @@
      <string>Select Binary</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="destinationFolderLineEdit">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -83,7 +83,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="destinationFolderPushButton">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -96,7 +96,7 @@
      <string>Destination Folder</string>
     </property>
    </widget>
-   <widget class="QProgressBar" name="progressBar">
+   <widget class="QProgressBar" name="conversionProgressBar">
     <property name="geometry">
      <rect>
       <x>270</x>
@@ -109,7 +109,7 @@
      <number>0</number>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_5">
+   <widget class="QPushButton" name="conversionPushButton">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -122,7 +122,7 @@
      <string>Convert to ascii</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox">
+   <widget class="QCheckBox" name="replaceOriginalsCheckBox">
     <property name="geometry">
      <rect>
       <x>650</x>
@@ -135,7 +135,7 @@
      <string>Replace Originals</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_2">
+   <widget class="QCheckBox" name="enableLoggingCheckbox">
     <property name="geometry">
      <rect>
       <x>510</x>
@@ -148,7 +148,7 @@
      <string>Enable Logging</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_7">
+   <widget class="QPushButton" name="logFolderPushButton">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -161,7 +161,7 @@
      <string>Log Folder</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_3">
+   <widget class="QLineEdit" name="logFolderLineEdit">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -171,7 +171,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_8">
+   <widget class="QPushButton" name="selectAllPushButton">
     <property name="geometry">
      <rect>
       <x>250</x>
@@ -184,7 +184,7 @@
      <string>Select All</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_9">
+   <widget class="QPushButton" name="selectNonePushButton">
     <property name="geometry">
      <rect>
       <x>370</x>

@@ -8,12 +8,13 @@
 class Logger
 {
     std::string directoryLocation;
-    std::string stringCurrentDateTime();
+    std::string stringCurrentDateTime(bool includeSeconds);
+    bool logging = false;
 public:
-    bool logging = true;
     Logger(std::string directoryLocation);
     int printLog(std::string logMessage);
     void changeDirectory(std::string newDirectoryLocation);
+    void enableLogging(bool enabled);
 };
 
 #endif // LOGGER_H

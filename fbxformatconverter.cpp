@@ -190,3 +190,11 @@ int FBXFormatConverter::isFBXFile(std::string sourceLocation){
     FBXLog->printLog(msg);
     return -1;
 }
+
+void FBXFormatConverter::enableFBXLogging(bool enable){
+    FBXLog->enableLogging(enable);
+}
+
+void FBXFormatConverter::changeFBXLogDirectory(std::string newDirectory){
+    FBXLog->changeDirectory(newDirectory);
+}

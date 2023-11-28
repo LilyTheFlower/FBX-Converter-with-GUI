@@ -21,6 +21,8 @@ public:
     static int convertFile(std::string sourceLocation, std::string destinationLocaiton, bool deleteOriginal, std::string format);
     static int isFBXFile(std::string sourceLocation);
     static std::string checkFormat();
+    static void enableFBXLogging(bool enable);
+    static void changeFBXLogDirectory(std::string newDirectory);
 };
 
 #endif // FBXFORMATCONVERTER_H

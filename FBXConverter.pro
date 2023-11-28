@@ -12,12 +12,14 @@ SOURCES += \
     fbxformatconverter.cpp \
     logger.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    settingskeeper.cpp
 
 HEADERS += \
     fbxformatconverter.h \
     logger.h \
-    mainwindow.h
+    mainwindow.h \
+    settingskeeper.h
 
 FORMS += \
     mainwindow.ui
