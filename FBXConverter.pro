@@ -10,16 +10,16 @@ CONFIG += c++17
 
 SOURCES += \
     fbxformatconverter.cpp \
+    filesaver.cpp \
     logger.cpp \
     main.cpp \
     mainwindow.cpp \
-    settingskeeper.cpp
 
 HEADERS += \
     fbxformatconverter.h \
+    filesaver.h \
     logger.h \
     mainwindow.h \
-    settingskeeper.h
 
 FORMS += \
     mainwindow.ui

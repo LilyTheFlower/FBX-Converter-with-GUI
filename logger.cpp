@@ -3,7 +3,6 @@
 #include <QFile>
 #include <QTextStream>
 #include <iostream>
-#include <string>
 #include <stdio.h>
 #include <time.h>
 Logger::Logger(std::string directoryLocation){
