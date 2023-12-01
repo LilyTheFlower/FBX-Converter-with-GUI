@@ -45,10 +45,12 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
         //record found, location is equal to where the size of the record begins
 
         //prepare to store the data from before record and after it
-        std::string before;
-        std::string after;
-        while(ftell(saveFile) + 1 != search - recordID.length()){
-            before += fgetc(saveFile);
+        char* before = (char*)calloc(search - recordID.length(), 1);
+
+        while(ftell(saveFile)!= search - recordID.length()-1){
+            int c = fgetc(saveFile);
+            printf("%c : %d", c, c);
+            before += c;
         }
         //now skip over the record that is being updated
 
@@ -69,6 +71,7 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
             }
         }while(c!= delimiter);
         fseek(saveFile, stoi(readSize), SEEK_CUR);
+        char* after = (char*)calloc(totalBytes - search - recordID.length() - stoi(readSize), 1);
         while((c = fgetc(saveFile)) != -1){
             after +=c;
         }
@@ -78,7 +81,7 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
             printf("failed to re-open the file, notify the user via gui\n");
             return -1;
         }
-        fputs(before.c_str(), newFile);
+        fputs(before, newFile);
         //put in the header string as the first part of the string to be added to the file
         std::fputs(writeRecordID.c_str(), newFile);
         //put in the header string as the first part of the string to be added to the file
@@ -88,7 +91,7 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
             char c = *((char*)data + i);
             fputc(c, newFile);
         }
-        fputs(after.c_str(), newFile);
+        fputs(after, newFile);
         fclose(newFile);
         return 1;
     }else{
@@ -142,7 +145,7 @@ fileSaver::record* fileSaver::read(std::string file, std::string recordID){
         //create int of the size of the record
         int dataSize = stoi(readSize);
         //prepare a pointer for the raw data being read
-        char* data = (char*)malloc(dataSize);
+        char* data = (char*)calloc(dataSize, 1);
         //read the data byte by byte into memory
         for(int i = 0; i <dataSize; i++){
             //read the byte out of the file
@@ -191,7 +194,7 @@ int fileSaver::findRecord(FILE* saveFile, std::string recordID){
             //get character from file
             c = fgetc(saveFile);
             if(c == EOF){
-                printf("reached end of file, head to error checking\n");
+                printf("reached end of file looking for record ID, head to error checking\n");
                 break;
             }
             if(c!= delimiter){
@@ -205,7 +208,7 @@ int fileSaver::findRecord(FILE* saveFile, std::string recordID){
             //get character from file
             c = fgetc(saveFile);
             if(c == -1){
-                printf("reached end of file, head to error checking\n");
+                printf("reached end of file looking for record size, head to error checking\n");
                 break;
             }
             if(c!= delimiter){
