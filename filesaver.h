@@ -5,18 +5,21 @@
 #endif
 #include<string>
 
+static char delimiter = '_';
 class fileSaver
 {
 public:
     //CAUTION!!! be aware that the record ID cannot contain the "_" delimiter character as the funciton is written, to change this, choose another delimiter character that wont be in your record ID
-    char delimiter = '_';
     struct record{
         void* data;
         int size;
     };
     fileSaver();
-    int save(std::string file, void* data, int sizeOfData, std::string recordID);
-    record* read(std::string file, std::string recordID);
+    static int save(std::string file, void* data, int sizeOfData, std::string recordID);
+    static record* read(std::string file, std::string recordID);
+
+    static int findRecord(FILE* saveFile, std::string recordID);
+    static int findRecord(std::string file, std::string recordID);
 };
 
 #endif // FILESAVER_H
