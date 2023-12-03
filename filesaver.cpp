@@ -152,7 +152,7 @@ fileSaver::record* fileSaver::read(std::string file, std::string recordID){
         //create int of the size of the record
         int dataSize = stoi(readSize);
         //prepare a pointer for the raw data being read
-        char* data = (char*)calloc(dataSize, 1);
+        char* data = (char*)calloc(dataSize + 1, 1);
         //read the data byte by byte into memory
         for(int i = 0; i <dataSize; i++){
             //read the byte out of the file
@@ -165,6 +165,7 @@ fileSaver::record* fileSaver::read(std::string file, std::string recordID){
             //put the byte of data into memory
             data[i] = c;
         }
+        data[dataSize] = '\0';
         //put the data and size of the record into a struct
         r->data = data;
         r->size = dataSize;

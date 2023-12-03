@@ -25,6 +25,7 @@ private slots:
 
     void on_enableLoggingCheckbox_stateChanged(int arg1);
 
+    void closeEvent (QCloseEvent *event);
 private:
     Ui::MainWindow *ui;
 };
