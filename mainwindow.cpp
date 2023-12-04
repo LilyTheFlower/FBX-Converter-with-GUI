@@ -12,8 +12,6 @@ std::string settingsFile = QDir::currentPath().toStdString().append("\\settings.
 std::string logFilePath = "";
 std::string sourceFolderPath = "";
 std::string destinationFolderPath = "";
-char saveBuff[200];
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -22,25 +20,20 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     fileSaver::record* r;
     r = fileSaver::read(settingsFile, "logPath");
+
+    logFilePath = readStringFromSettings("logPath");
+    ui->logFolderLineEdit->setText(QString::fromStdString(logFilePath));
+    sourceFolderPath = readStringFromSettings("sourceFolder");
+    ui->sourceFolderLineEdit->setText(QString::fromStdString(sourceFolderPath));
+    destinationFolderPath = readStringFromSettings("destinationFolder");
+    ui->destinationFolderLineEdit->setText(QString::fromStdString(destinationFolderPath));
+    std::string enableLog = readStringFromSettings("enableLogging");
     if(r->size > 0){
-        memset(saveBuff, '\0', 200);
-        strcat(saveBuff, (char*)r->data);
-        logFilePath = saveBuff;
-        ui->logFolderLineEdit->setText(QString::fromStdString(logFilePath));
-    }
-    r = fileSaver::read(settingsFile, "sourceFolder");
-    if(r->size > 0){
-        memset(saveBuff, '\0', 200);
-        strcat(saveBuff, (char*)r->data);
-        sourceFolderPath = saveBuff;
-        ui->sourceFolderLineEdit->setText(QString::fromStdString(sourceFolderPath));
-    }
-    r = fileSaver::read(settingsFile, "destinationFolder");
-    if(r->size > 0){
-        memset(saveBuff, '\0', 200);
-        strcat(saveBuff, (char*)r->data);
-        destinationFolderPath = saveBuff;
-        ui->destinationFolderLineEdit->setText(QString::fromStdString(destinationFolderPath));
+        if(enableLog.compare("1") == 0){
+            ui->enableLoggingCheckbox->setCheckState(Qt::Checked);
+        }else if(enableLog.compare("0") == 0){
+            ui->enableLoggingCheckbox->setCheckState(Qt::Unchecked);
+        }
     }
 }
 
@@ -81,25 +74,57 @@ void MainWindow::on_destinationFolderPushButton_clicked()
 }
 
 
+//Copy check box saving functionality for the other checkbox
+
 void MainWindow::on_enableLoggingCheckbox_stateChanged(int arg1)
 {
+    char c;
     if(arg1){
         FBXFormatConverter::enableFBXLogging(true);
+        c = '1';
+        fileSaver::save(settingsFile, &c, 1,  "enableLogging");
     }else{
         FBXFormatConverter::enableFBXLogging(false);
+        c = '0';
+        fileSaver::save(settingsFile, &c, 1,  "enableLogging");
+    }
+}
+
+void MainWindow::on_replaceOriginalsCheckBox_stateChanged(int arg1)
+{
+    char c;
+    if(arg1){
+        c = '1';
+        fileSaver::save(settingsFile, &c, 1,  "replaceOriginals");
+    }else{
+        c = '0';
+        fileSaver::save(settingsFile, &c, 1,  "replaceOriginals");
     }
 }
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {
-    memset(saveBuff, 0, 200);
-    strcat(saveBuff, logFilePath.c_str());
-    fileSaver::save(settingsFile, saveBuff, logFilePath.length(),  "logPath");
-    memset(saveBuff, 0, 200);
-    strcat(saveBuff, sourceFolderPath.c_str());
-    fileSaver::save(settingsFile, saveBuff, sourceFolderPath.length(),  "sourceFolder");
-    memset(saveBuff, 0, 200);
-    strcat(saveBuff, destinationFolderPath.c_str());
-    fileSaver::save(settingsFile, saveBuff, destinationFolderPath.length(),  "destinationFolder");
+    saveStringtoSettings("logPath", logFilePath);
+    saveStringtoSettings("sourceFolder", sourceFolderPath);
+    saveStringtoSettings("destinationFolder", destinationFolderPath);
     event->accept();
 }
+
+void MainWindow::saveStringtoSettings(std::string recordID, std::string data){
+    char saveBuff[200];
+    memset(saveBuff, 0, 200);
+    strcat(saveBuff, data.c_str());
+    fileSaver::save(settingsFile, saveBuff, data.length(),  recordID);
+}
+
+std::string MainWindow::readStringFromSettings(std::string recordID){
+    fileSaver::record* r;
+    r = fileSaver::read(settingsFile, recordID);
+    if(r->size > 0){
+        return (char*)r->data;
+    }else{
+        return "";
+    }
+}
+
+

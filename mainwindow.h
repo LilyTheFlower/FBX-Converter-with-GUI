@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include "fileSaver.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -26,6 +26,11 @@ private slots:
     void on_enableLoggingCheckbox_stateChanged(int arg1);
 
     void closeEvent (QCloseEvent *event);
+
+    void on_replaceOriginalsCheckBox_stateChanged(int arg1);
+
+    void saveStringtoSettings(std::string recordID, std::string data);
+    std::string readStringFromSettings(std::string recordID);
 private:
     Ui::MainWindow *ui;
 };
