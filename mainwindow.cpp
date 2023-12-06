@@ -163,14 +163,6 @@ void MainWindow::populateTable(){
                 ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("ascii"));
             }else if(fbxFormat == FBXFormatConverter::binary){
                 ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("binary"));
-            }else if(fbxFormat == FBXFormatConverter::ascii6){
-                ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("FBX 6.0 ascii"));
-            }else if(fbxFormat == FBXFormatConverter::binary6){
-                ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("FBX 6.0 binary"));
-            }else if(fbxFormat == FBXFormatConverter::encrypted){
-                ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("encrypted"));
-            }else if(fbxFormat == FBXFormatConverter::encrypted6){
-                ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("FBX 6.0 encrypted"));
             }else{
                 ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("unknown"));
             }
@@ -182,8 +174,8 @@ void MainWindow::populateTable(){
 
 void MainWindow::on_selectPushButton_clicked()
 {
+    ui->fbxFileTableWidget->clearSelection();
     if(ui->selectionTypeComboBox->currentText().compare("None") == 0){
-        ui->fbxFileTableWidget->clearSelection();
         return;
     }
     for(int i = 0 ; i < ui->fbxFileTableWidget->rowCount(); i++){

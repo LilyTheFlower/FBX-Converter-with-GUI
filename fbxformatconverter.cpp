@@ -10,10 +10,6 @@ FbxScene* nullScene;
 //default values, reconfigured later
 int binaryID;
 int asciiID;
-int binary6ID;
-int ascii6ID;
-int encryptedID;
-int encrypted6ID;
 
 FBXFormatConverter::FBXFormatConverter(){
     FBXLog = new Logger("\\logs");
@@ -34,21 +30,11 @@ FBXFormatConverter::FBXFormatConverter(){
         {
             char const* formatDesctiptions = lSdkManager->GetIOPluginRegistry()->GetWriterFormatDescription( i );
             printf("%s\n", formatDesctiptions);
-            if(strcmp(formatDesctiptions, "FBX binary (*.fbx)") == 0)
-            {
+            if(strcmp(formatDesctiptions, "FBX binary (*.fbx)") == 0){
                 binaryID = i;
             }
-            else if(strcmp(formatDesctiptions, "FBX ascii (*.fbx)") == 0)
-            {
+            else if(strcmp(formatDesctiptions, "FBX ascii (*.fbx)") == 0){
                 asciiID = i;
-            }else if(strcmp(formatDesctiptions, "FBX 6.0 binary (*.fbx)") == 0){
-                binary6ID = i;
-            }else if(strcmp(formatDesctiptions, "FBX 6.0 ascii (*.fbx)") == 0){
-                ascii6ID = i;
-            }else if(strcmp(formatDesctiptions, "FBX encrypted (*.fbx)") == 0){
-                encryptedID = i;
-            }else if(strcmp(formatDesctiptions, "FBX 6.0 encrypted (*.fbx)") == 0){
-                encrypted6ID = i;
             }
         }
     }
@@ -191,7 +177,7 @@ int FBXFormatConverter::convertFile(std::string sourceLocation, std::string dest
 int FBXFormatConverter::isFBXFile(std::string sourceLocation){
     int formatID = -1;
     auto pIOPluginRegistry = lSdkManager->GetIOPluginRegistry();
-    pIOPluginRegistry->DetectReaderFileFormat(sourceLocation.c_str(), formatID);
+    pIOPluginRegistry->DetectWriterFileFormat(sourceLocation.c_str(), formatID);
     if(pIOPluginRegistry->ReaderIsFBX( formatID )){
         FBXLog->printLog("FBX file verified");
         return formatID;
@@ -207,21 +193,17 @@ int FBXFormatConverter::isFBXFile(std::string sourceLocation){
 FBXFormatConverter::FBXFormat FBXFormatConverter::checkFormat(std::string sourceLocation){
     int isfbx = isFBXFile(sourceLocation);
     if(isfbx != -1){
-        //The file is an fbx
-        if(isfbx == binaryID){
-            return FBXFormatConverter::binary;
-        }else if(isfbx == asciiID){
-            return FBXFormatConverter::ascii;
-        }else if(isfbx == encryptedID){
-            return FBXFormatConverter::encrypted;
-        }else if(isfbx == binary6ID){
-            return FBXFormatConverter::binary6;
-        }else if(isfbx == encrypted6ID){
-            return FBXFormatConverter::encrypted6;
-        }else if(isfbx == ascii6ID){
-            return FBXFormatConverter::ascii6;
-        }
-        return FBXFormatConverter::unknown;
+        FILE* f = fopen(sourceLocation.c_str(), "r");
+        char c;
+        do{
+            c = fgetc(f);
+            if(c == 0 || c > 127){
+                fclose(f);
+                return FBXFormatConverter::binary;
+            }
+        }while(c!= EOF);
+        fclose(f);
+        return FBXFormatConverter::ascii;
     }else{
         return FBXFormatConverter::unknown;
     }

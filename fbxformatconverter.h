@@ -19,7 +19,7 @@ class FBXFormatConverter
 
 public:
     enum FBXFormat{
-        ascii, binary, ascii6, binary6, encrypted, encrypted6, unknown
+        ascii, binary, unknown
     };
     FBXFormatConverter();
     static int convertFile(std::string sourceLocation, std::string destinationLocaiton, bool deleteOriginal, std::string format);
