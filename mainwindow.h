@@ -30,7 +30,14 @@ private slots:
     void on_replaceOriginalsCheckBox_stateChanged(int arg1);
 
     void saveStringtoSettings(std::string recordID, std::string data);
+
     std::string readStringFromSettings(std::string recordID);
+
+    void populateTable();
+    void on_selectPushButton_clicked();
+
+    void on_fbxFileTableWidget_itemSelectionChanged();
+
 private:
     Ui::MainWindow *ui;
 };

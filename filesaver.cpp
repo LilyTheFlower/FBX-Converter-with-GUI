@@ -9,7 +9,7 @@ fileSaver::fileSaver()
 int fileSaver::save(std::string file, void* data, int sizeOfData, std::string recordID){
     FILE* saveFile = fopen(file.c_str(), "a+");
     if(!saveFile){
-        printf("failed to open the file, notify the user via gui\n");
+        //printf("failed to open the file, notify the user via gui\n");
         return -1;
     }
     //create the header string
@@ -46,7 +46,7 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
 
         //prepare to store the data from before record and after it
         char* before = (char*)calloc(search - (((int)recordID.length())+1), 1);
-        printf("search: %d recordID length: %d  : %d\n", search, ((int)recordID.length())+1, search - (((int)recordID.length())+1));
+        //printf("search: %d recordID length: %d  : %d\n", search, ((int)recordID.length())+1, search - (((int)recordID.length())+1));
         for(int i = 0; i < search - (((int)recordID.length())+1); i++){
             before[i] = fgetc(saveFile);
         }
@@ -60,7 +60,7 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
             c = fgetc(saveFile);
             if(c == -1){
                 //error occured while reading since we know the record exists already
-                printf("failed to read file, notify user via gui, send junk record\n");
+                //printf("failed to read file, notify user via gui, send junk record\n");
                 return -1;
             }
             if(c!= delimiter){
@@ -69,7 +69,7 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
         }while(c!= delimiter);
         fseek(saveFile, stoi(readSize), SEEK_CUR);
         char* after = (char*)calloc(totalBytes - search - (int)readSize.length() - stoi(readSize) - 1, 1);
-        printf("total bytes: %d search: %d record size length: %d readSize: %d  : %d\n", totalBytes, search, (int)readSize.length(), stoi(readSize), totalBytes - search - (int)readSize.length() - stoi(readSize) - 1);
+        //printf("total bytes: %d search: %d record size length: %d readSize: %d  : %d\n", totalBytes, search, (int)readSize.length(), stoi(readSize), totalBytes - search - (int)readSize.length() - stoi(readSize) - 1);
         for(int i = 0; c != -1; i++){
             c = fgetc(saveFile);
             if(c == -1) break;
@@ -79,7 +79,7 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
         fclose(saveFile);
         FILE* newFile = fopen(file.c_str(), "w+");
         if(!saveFile){
-            printf("failed to re-open the file, notify the user via gui\n");
+            //printf("failed to re-open the file, notify the user via gui\n");
             return -1;
         }
 
@@ -102,11 +102,11 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
         fclose(newFile);
         return 1;
     }else{
-        printf("error occured in searching the file for an existing record while saving the record");
+        //printf("error occured in searching the file for an existing record while saving the record");
         fclose(saveFile);
         return -1;
     }
-    printf("Should never reach this place in save, something went really weird");
+    //printf("Should never reach this place in save, something went really weird");
     fclose(saveFile);
     return -1;
 }
@@ -118,7 +118,7 @@ fileSaver::record* fileSaver::read(std::string file, std::string recordID){
 
     FILE* saveFile = fopen(file.c_str(), "a+");
     if(!saveFile){
-        printf("failed to open the file while reading for a record, notify the user via gui, send junk record\n");
+        //printf("failed to open the file while reading for a record, notify the user via gui, send junk record\n");
         return r;
     }
 
@@ -142,7 +142,7 @@ fileSaver::record* fileSaver::read(std::string file, std::string recordID){
             c = fgetc(saveFile);
             if(c == -1){
                 //error occured while reading since we know the record exists already
-                printf("failed to read file while trying to read record size, notify user via gui, send junk record\n");
+                //printf("failed to read file while trying to read record size, notify user via gui, send junk record\n");
                 return r;
             }
             if(c!= delimiter){
@@ -159,7 +159,7 @@ fileSaver::record* fileSaver::read(std::string file, std::string recordID){
             c = fgetc(saveFile);
             if(c == -1){
                 //error occured while reading since we know the record exists already
-                printf("failed to read file while trying to read record data, notify user via gui, send junk record\n");
+                //printf("failed to read file while trying to read record data, notify user via gui, send junk record\n");
                 return r;
             }
             //put the byte of data into memory
@@ -175,10 +175,10 @@ fileSaver::record* fileSaver::read(std::string file, std::string recordID){
         return r;
     }else{
         //error occured looking for the record
-        printf("error occured while trying to read record\n");
+        //printf("error occured while trying to read record\n");
         return r;
     }
-    printf("Should never reach this place in read, something went really weird\n");
+    //printf("Should never reach this place in read, something went really weird\n");
     fclose(saveFile);
     return r;
 }
@@ -198,12 +198,12 @@ int fileSaver::findRecord(FILE* saveFile, std::string recordID){
         std::string readRecordID;
         std::string readSize;
         //begin reading the record ID
-        printf("looking at: %ld\n", ftell(saveFile));
+        //printf("looking at: %ld\n", ftell(saveFile));
         do{
             //get character from file
             c = fgetc(saveFile);
             if(c == EOF){
-                printf("reached end of file looking for record ID\n");
+                //printf("reached end of file looking for record ID\n");
                 break;
             }
             if(c!= delimiter){
@@ -212,13 +212,13 @@ int fileSaver::findRecord(FILE* saveFile, std::string recordID){
             }
             //end loop when delimiter is reached
         }while(c!= delimiter);
-        printf("Looking for: %s, found: %s\n", recordID.c_str(), readRecordID.c_str());
+        //printf("Looking for: %s, found: %s\n", recordID.c_str(), readRecordID.c_str());
         //now start reading the size of the record
         do{
             //get character from file
             c = fgetc(saveFile);
             if(c == -1){
-                printf("reached end of file looking for record size\n");
+                //printf("reached end of file looking for record size\n");
                 break;
             }
             if(c!= delimiter){
@@ -236,11 +236,11 @@ int fileSaver::findRecord(FILE* saveFile, std::string recordID){
             return search;
         }else if(c != -1){
             //did not find the record, skip ahead by the size of the record data and try again on the next record
-            printf("Didn't find record, moving forward %d\n", stoi(readSize));
+            //printf("Didn't find record, moving forward %d\n", stoi(readSize));
             fseek(saveFile, stoi(readSize), SEEK_CUR);
         }
     }
-    printf("totalBytes: %d file pointer: %d\n", totalBytes, ftell(saveFile));
+    //printf("totalBytes: %d file pointer: %d\n", totalBytes, ftell(saveFile));
     if(ftell(saveFile) >= totalBytes){
         //reached the end of the file successfully, and the record was not found
 
@@ -249,11 +249,11 @@ int fileSaver::findRecord(FILE* saveFile, std::string recordID){
         //the place to put a new record is at the end of the file
         return totalBytes;
     }else{
-        printf("there was most likely an error, try to reset the file to its position and return -1\n");
+        //printf("there was most likely an error, try to reset the file to its position and return -1\n");
         fseek(saveFile, placeHolder, SEEK_SET);
         return -1;
     }
-    printf("Should never reach this place in find record, something went really weird\n");
+    //printf("Should never reach this place in find record, something went really weird\n");
     fseek(saveFile, placeHolder, SEEK_SET);
     return -1;
 }
@@ -261,7 +261,7 @@ int fileSaver::findRecord(FILE* saveFile, std::string recordID){
 int fileSaver::findRecord(std::string file, std::string recordID){
     FILE* saveFile = fopen(file.c_str(), "a+");
     if(!saveFile){
-        printf("failed to open the file, notify the user via gui, send junk record\n");
+       // printf("failed to open the file, notify the user via gui, send junk record\n");
         return -1;
     }
     int search = fileSaver::findRecord(saveFile, recordID);

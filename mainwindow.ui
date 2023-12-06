@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListWidget" name="fbxFileListWidget">
+   <widget class="QTableWidget" name="fbxFileTableWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -23,6 +23,16 @@
       <height>371</height>
      </rect>
     </property>
+    <column>
+     <property name="text">
+      <string>File Name</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>FBX Type</string>
+     </property>
+    </column>
    </widget>
    <widget class="QPushButton" name="sourceFolderPushButton">
     <property name="geometry">
@@ -47,30 +57,17 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="selectAsciiPushButton">
+   <widget class="QPushButton" name="selectPushButton">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>440</y>
-      <width>101</width>
+      <width>181</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>Select Ascii</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="selectBinaryPushButton">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>440</y>
-      <width>101</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Select Binary</string>
+     <string>Select</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="destinationFolderLineEdit">
@@ -99,9 +96,9 @@
    <widget class="QProgressBar" name="conversionProgressBar">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>420</x>
       <y>560</y>
-      <width>501</width>
+      <width>351</width>
       <height>23</height>
      </rect>
     </property>
@@ -114,18 +111,18 @@
      <rect>
       <x>10</x>
       <y>560</y>
-      <width>251</width>
+      <width>181</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>Convert to ascii</string>
+     <string>Convert To :</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="replaceOriginalsCheckBox">
     <property name="geometry">
      <rect>
-      <x>650</x>
+      <x>610</x>
       <y>440</y>
       <width>121</width>
       <height>22</height>
@@ -138,7 +135,7 @@
    <widget class="QCheckBox" name="enableLoggingCheckbox">
     <property name="geometry">
      <rect>
-      <x>510</x>
+      <x>460</x>
       <y>440</y>
       <width>121</width>
       <height>22</height>
@@ -171,31 +168,85 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="selectAllPushButton">
+   <widget class="QComboBox" name="selectionTypeComboBox">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>190</x>
       <y>440</y>
-      <width>101</width>
+      <width>221</width>
       <height>24</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Select All</string>
-    </property>
+    <item>
+     <property name="text">
+      <string>ascii</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>binary</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FBX 6.0 ascii</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FBX 6.0 binary</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>None</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>All</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string/>
+     </property>
+    </item>
    </widget>
-   <widget class="QPushButton" name="selectNonePushButton">
+   <widget class="QComboBox" name="conversionTypeComboBox">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>440</y>
-      <width>101</width>
+      <x>190</x>
+      <y>560</y>
+      <width>221</width>
       <height>24</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Select None</string>
-    </property>
+    <item>
+     <property name="text">
+      <string>ascii</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>binary</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FBX 6.0 ascii</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FBX 6.0 binary</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string/>
+     </property>
+    </item>
    </widget>
   </widget>
  </widget>

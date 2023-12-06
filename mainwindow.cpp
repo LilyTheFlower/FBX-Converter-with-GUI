@@ -35,6 +35,21 @@ MainWindow::MainWindow(QWidget *parent)
             ui->enableLoggingCheckbox->setCheckState(Qt::Unchecked);
         }
     }
+
+    std::string replaceOriginals = readStringFromSettings("replaceOriginals");
+    if(r->size > 0){
+        if(replaceOriginals.compare("1") == 0){
+            ui->replaceOriginalsCheckBox->setCheckState(Qt::Checked);
+        }else if(replaceOriginals.compare("0") == 0){
+            ui->replaceOriginalsCheckBox->setCheckState(Qt::Unchecked);
+        }
+    }
+
+    ui->fbxFileTableWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    ui->fbxFileTableWidget->setColumnWidth(0, ui->fbxFileTableWidget->width()*(0.666));
+    ui->fbxFileTableWidget->setColumnWidth(1, ui->fbxFileTableWidget->width()*(0.333));
+    ui->fbxFileTableWidget->verticalHeader()->setVisible(false);
+    populateTable();
 }
 
 MainWindow::~MainWindow()
@@ -54,6 +69,10 @@ void MainWindow::on_sourceFolderPushButton_clicked()
     QString folderName = QFileDialog::getExistingDirectory(this, "Choose a Folder as the Source Directory", QDir::homePath());
     ui->sourceFolderLineEdit->setText(folderName);
     sourceFolderPath = folderName.toStdString();
+    ui->fbxFileTableWidget->setRowCount(0);
+    QDir folder(QString::fromStdString(sourceFolderPath));
+    QStringList filesList = folder.entryList(QStringList() << "*.fbx" << "*.FBX",QDir::Files);
+    populateTable();
 }
 
 
@@ -64,7 +83,6 @@ void MainWindow::on_logFolderPushButton_clicked()
     FBXFormatConverter::changeFBXLogDirectory(folderName.toStdString());
     logFilePath = folderName.toStdString();
 }
-
 
 void MainWindow::on_destinationFolderPushButton_clicked()
 {
@@ -104,9 +122,10 @@ void MainWindow::on_replaceOriginalsCheckBox_stateChanged(int arg1)
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {
-    saveStringtoSettings("logPath", logFilePath);
+    //a crash is being caused somewhere in here, after files are being written, check for memory leaks
+   /* saveStringtoSettings("logPath", logFilePath);
     saveStringtoSettings("sourceFolder", sourceFolderPath);
-    saveStringtoSettings("destinationFolder", destinationFolderPath);
+    saveStringtoSettings("destinationFolder", destinationFolderPath);*/
     event->accept();
 }
 
@@ -127,4 +146,66 @@ std::string MainWindow::readStringFromSettings(std::string recordID){
     }
 }
 
+void MainWindow::populateTable(){
+    if(sourceFolderPath.compare("") != 0){
+        QDir folder(QString::fromStdString(sourceFolderPath));
+        QStringList filesList = folder.entryList(QStringList() << "*.fbx" << "*.FBX",QDir::Files);
+        int i = 0;
+        foreach(QString file, filesList){
+            ui->fbxFileTableWidget->insertRow(i);
+            ui->fbxFileTableWidget->setItem(i, 0, new QTableWidgetItem(file));
+            std::string fullPath;
+            fullPath.append(sourceFolderPath);
+            fullPath.append("/");
+            fullPath.append(file.toStdString());
+            FBXFormatConverter::FBXFormat fbxFormat = FBXFormatConverter::checkFormat(fullPath);
+            if(fbxFormat == FBXFormatConverter::ascii){
+                ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("ascii"));
+            }else if(fbxFormat == FBXFormatConverter::binary){
+                ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("binary"));
+            }else if(fbxFormat == FBXFormatConverter::ascii6){
+                ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("FBX 6.0 ascii"));
+            }else if(fbxFormat == FBXFormatConverter::binary6){
+                ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("FBX 6.0 binary"));
+            }else if(fbxFormat == FBXFormatConverter::encrypted){
+                ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("encrypted"));
+            }else if(fbxFormat == FBXFormatConverter::encrypted6){
+                ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("FBX 6.0 encrypted"));
+            }else{
+                ui->fbxFileTableWidget->setItem(i, 1, new QTableWidgetItem("unknown"));
+            }
+            i++;
+        }
+    }
+}
+
+
+void MainWindow::on_selectPushButton_clicked()
+{
+    if(ui->selectionTypeComboBox->currentText().compare("None") == 0){
+        ui->fbxFileTableWidget->clearSelection();
+        return;
+    }
+    for(int i = 0 ; i < ui->fbxFileTableWidget->rowCount(); i++){
+        if(ui->selectionTypeComboBox->currentText().compare(ui->fbxFileTableWidget->item(i, 1)->text())== 0){
+            ui->fbxFileTableWidget->item(i, 0)->setSelected(true);
+            ui->fbxFileTableWidget->item(i, 1)->setSelected(true);
+        }else if(ui->selectionTypeComboBox->currentText().compare("All") == 0){
+            ui->fbxFileTableWidget->item(i, 0)->setSelected(true);
+            ui->fbxFileTableWidget->item(i, 1)->setSelected(true);
+        }
+    }
+}
+
+
+void MainWindow::on_fbxFileTableWidget_itemSelectionChanged()
+{
+    for(int i = 0 ; i < ui->fbxFileTableWidget->rowCount(); i++){
+        if(ui->fbxFileTableWidget->item(i, 0)->isSelected() && !ui->fbxFileTableWidget->item(i, 1)->isSelected()){
+            ui->fbxFileTableWidget->item(i, 1)->setSelected(true);
+        }else if(ui->fbxFileTableWidget->item(i, 1)->isSelected() && !ui->fbxFileTableWidget->item(i, 0)->isSelected()){
+            ui->fbxFileTableWidget->item(i, 0)->setSelected(true);
+        }
+    }
+}
 

@@ -10,6 +10,10 @@ FbxScene* nullScene;
 //default values, reconfigured later
 int binaryID;
 int asciiID;
+int binary6ID;
+int ascii6ID;
+int encryptedID;
+int encrypted6ID;
 
 FBXFormatConverter::FBXFormatConverter(){
     FBXLog = new Logger("\\logs");
@@ -29,13 +33,22 @@ FBXFormatConverter::FBXFormatConverter(){
         if (lSdkManager->GetIOPluginRegistry()->WriterIsFBX( i ) )
         {
             char const* formatDesctiptions = lSdkManager->GetIOPluginRegistry()->GetWriterFormatDescription( i );
-            if ( strcmp(formatDesctiptions, "binary") == 0 )
+            printf("%s\n", formatDesctiptions);
+            if(strcmp(formatDesctiptions, "FBX binary (*.fbx)") == 0)
             {
-                const_cast<int&>(binaryID) = i;
+                binaryID = i;
             }
-            else if ( strcmp(formatDesctiptions, "ascii") == 0 )
+            else if(strcmp(formatDesctiptions, "FBX ascii (*.fbx)") == 0)
             {
-                const_cast<int&>(asciiID) = i;
+                asciiID = i;
+            }else if(strcmp(formatDesctiptions, "FBX 6.0 binary (*.fbx)") == 0){
+                binary6ID = i;
+            }else if(strcmp(formatDesctiptions, "FBX 6.0 ascii (*.fbx)") == 0){
+                ascii6ID = i;
+            }else if(strcmp(formatDesctiptions, "FBX encrypted (*.fbx)") == 0){
+                encryptedID = i;
+            }else if(strcmp(formatDesctiptions, "FBX 6.0 encrypted (*.fbx)") == 0){
+                encrypted6ID = i;
             }
         }
     }
@@ -189,6 +202,29 @@ int FBXFormatConverter::isFBXFile(std::string sourceLocation){
     msg.append(" Aborting import process...");
     FBXLog->printLog(msg);
     return -1;
+}
+
+FBXFormatConverter::FBXFormat FBXFormatConverter::checkFormat(std::string sourceLocation){
+    int isfbx = isFBXFile(sourceLocation);
+    if(isfbx != -1){
+        //The file is an fbx
+        if(isfbx == binaryID){
+            return FBXFormatConverter::binary;
+        }else if(isfbx == asciiID){
+            return FBXFormatConverter::ascii;
+        }else if(isfbx == encryptedID){
+            return FBXFormatConverter::encrypted;
+        }else if(isfbx == binary6ID){
+            return FBXFormatConverter::binary6;
+        }else if(isfbx == encrypted6ID){
+            return FBXFormatConverter::encrypted6;
+        }else if(isfbx == ascii6ID){
+            return FBXFormatConverter::ascii6;
+        }
+        return FBXFormatConverter::unknown;
+    }else{
+        return FBXFormatConverter::unknown;
+    }
 }
 
 void FBXFormatConverter::enableFBXLogging(bool enable){
