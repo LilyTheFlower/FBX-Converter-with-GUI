@@ -74,9 +74,6 @@ void MainWindow::on_sourceFolderPushButton_clicked()
     QString folderName = QFileDialog::getExistingDirectory(this, "Choose a Folder as the Source Directory", QDir::homePath());
     ui->sourceFolderLineEdit->setText(folderName);
     sourceFolderPath = folderName.toStdString();
-    ui->fbxFileTableWidget->setRowCount(0);
-    QDir folder(QString::fromStdString(sourceFolderPath));
-    QStringList filesList = folder.entryList(QStringList() << "*.fbx" << "*.FBX",QDir::Files);
     populateTable();
 }
 
@@ -120,9 +117,13 @@ void MainWindow::on_replaceOriginalsCheckBox_stateChanged(int arg1)
     if(arg1){
         c = '1';
         fileSaver::save(settingsFile, &c, 1,  "replaceOriginals");
+        ui->destinationFolderLineEdit->setDisabled(true);
+        ui->destinationFolderPushButton->setDisabled(true);
     }else{
         c = '0';
         fileSaver::save(settingsFile, &c, 1,  "replaceOriginals");
+        ui->destinationFolderLineEdit->setDisabled(false);
+        ui->destinationFolderPushButton->setDisabled(false);
     }
 }
 
@@ -154,6 +155,7 @@ std::string MainWindow::readStringFromSettings(std::string recordID){
 
 void MainWindow::populateTable(){
     if(sourceFolderPath.compare("") != 0){
+        ui->fbxFileTableWidget->setRowCount(0);
         QDir folder(QString::fromStdString(sourceFolderPath));
         QStringList filesList = folder.entryList(QStringList() << "*.fbx" << "*.FBX",QDir::Files);
         int i = 0;
@@ -205,5 +207,40 @@ void MainWindow::on_fbxFileTableWidget_itemSelectionChanged()
             ui->fbxFileTableWidget->item(i, 0)->setSelected(true);
         }
     }
+}
+
+
+void MainWindow::on_conversionPushButton_clicked()
+{
+    for(int i = 0 ; i < ui->fbxFileTableWidget->rowCount(); i++){
+        if(ui->fbxFileTableWidget->item(i, 0)->isSelected()){
+            std::string fullInPath;
+            fullInPath.append(sourceFolderPath);
+            fullInPath.append("/");
+            fullInPath.append(ui->fbxFileTableWidget->item(i, 0)->text().toStdString());
+
+            std::string fullOutPath;
+            fullOutPath.append(destinationFolderPath);
+            fullOutPath.append("/");
+
+            FBXFormatConverter::FBXFormat format =  FBXFormatConverter::unknown;
+
+            if(ui->conversionTypeComboBox->currentText() == "ascii"){
+                format = FBXFormatConverter::ascii;
+                fullOutPath.append("ascii_");
+                fullOutPath.append(ui->fbxFileTableWidget->item(i, 0)->text().toStdString());
+            }else {
+                format = FBXFormatConverter::binary;
+                fullOutPath.append("binary_");
+                fullOutPath.append(ui->fbxFileTableWidget->item(i, 0)->text().toStdString());
+            }
+
+            if(ui->replaceOriginalsCheckBox->isChecked()){
+                fullOutPath = fullInPath;
+            }
+            FBXFormatConverter::convertFile(fullInPath, fullOutPath, true, format);
+        }
+    }
+    populateTable();
 }
 

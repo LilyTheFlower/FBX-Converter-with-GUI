@@ -93,7 +93,6 @@ bool FBXFormatConverter::exportFBX(std::string destinationLocaiton, FbxScene* sc
 
     // Declare the path and filename of the file to which the scene will be exported.
     // In this case, the file will be in the same directory as the executable.
-    const char* lFilename = "file.fbx";
     int fileFormat = -1;
     if(format == FBXFormatConverter::ascii){
         fileFormat = asciiID;
@@ -104,7 +103,7 @@ bool FBXFormatConverter::exportFBX(std::string destinationLocaiton, FbxScene* sc
         return false;
     }
     // Initialize the exporter.
-    bool lExportStatus = lExporter->Initialize(lFilename, fileFormat, lSdkManager->GetIOSettings());
+    bool lExportStatus = lExporter->Initialize(destinationLocaiton.c_str(), fileFormat, lSdkManager->GetIOSettings());
 
     //get the exporter status
     if(!lExportStatus) {

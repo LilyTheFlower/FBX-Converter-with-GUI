@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "fileSaver.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -37,6 +36,8 @@ private slots:
     void on_selectPushButton_clicked();
 
     void on_fbxFileTableWidget_itemSelectionChanged();
+
+    void on_conversionPushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
