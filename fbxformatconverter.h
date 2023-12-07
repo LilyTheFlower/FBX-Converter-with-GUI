@@ -11,22 +11,20 @@ class FBXFormatConverter
         std::string format;
         std::string* fileLocation;
     };
-
-
-
-    static FbxScene* importFBX(std::string sourceLocation);
-    static bool exportFBX(std::string destinationLocaiton, FbxScene* scene, std::string format);
-
 public:
     enum FBXFormat{
         ascii, binary, unknown
     };
+
     FBXFormatConverter();
-    static int convertFile(std::string sourceLocation, std::string destinationLocaiton, bool deleteOriginal, std::string format);
+    static int convertFile(std::string sourceLocation, std::string destinationLocaiton, bool deleteOriginal, FBXFormat format);
     static int isFBXFile(std::string sourceLocation);
     static FBXFormat checkFormat(std::string sourceLocation);
     static void enableFBXLogging(bool enable);
     static void changeFBXLogDirectory(std::string newDirectory);
+private:
+    static FbxScene* importFBX(std::string sourceLocation);
+    static bool exportFBX(std::string destinationLocaiton, FbxScene* scene, FBXFormat format);
 };
 
 #endif // FBXFORMATCONVERTER_H

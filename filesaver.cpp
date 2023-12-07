@@ -75,7 +75,6 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
             if(c == -1) break;
             after[i] = c;
         }
-        after[totalBytes - search - stoi(readSize)] = '\0';
         fclose(saveFile);
         FILE* newFile = fopen(file.c_str(), "w+");
         if(!saveFile){
@@ -86,7 +85,7 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
         for(int i = 0; i < search - (((int)recordID.length())+1); i++){
             fputc(before[i], newFile);
         }
-
+        free(before);
         //put in the header string as the first part of the string to be added to the file
         std::fputs(writeRecordID.c_str(), newFile);
         //put in the header string as the first part of the string to be added to the file
@@ -99,6 +98,8 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
         for(int i = 0; i < totalBytes - search - (int)readSize.length() - stoi(readSize) - 1; i++){
             fputc(after[i], newFile);
         }
+
+        free(after);
         fclose(newFile);
         return 1;
     }else{

@@ -27,12 +27,17 @@ MainWindow::MainWindow(QWidget *parent)
     ui->sourceFolderLineEdit->setText(QString::fromStdString(sourceFolderPath));
     destinationFolderPath = readStringFromSettings("destinationFolder");
     ui->destinationFolderLineEdit->setText(QString::fromStdString(destinationFolderPath));
+
     std::string enableLog = readStringFromSettings("enableLogging");
+    FBXFormatConverter::changeFBXLogDirectory(logFilePath);
+
     if(r->size > 0){
         if(enableLog.compare("1") == 0){
             ui->enableLoggingCheckbox->setCheckState(Qt::Checked);
+            FBXFormatConverter::enableFBXLogging(true);
         }else if(enableLog.compare("0") == 0){
             ui->enableLoggingCheckbox->setCheckState(Qt::Unchecked);
+            FBXFormatConverter::enableFBXLogging(false);
         }
     }
 
@@ -82,6 +87,7 @@ void MainWindow::on_logFolderPushButton_clicked()
     ui->logFolderLineEdit->setText(folderName);
     FBXFormatConverter::changeFBXLogDirectory(folderName.toStdString());
     logFilePath = folderName.toStdString();
+    FBXFormatConverter::changeFBXLogDirectory(logFilePath);
 }
 
 void MainWindow::on_destinationFolderPushButton_clicked()
@@ -123,9 +129,9 @@ void MainWindow::on_replaceOriginalsCheckBox_stateChanged(int arg1)
 void MainWindow::closeEvent (QCloseEvent *event)
 {
     //a crash is being caused somewhere in here, after files are being written, check for memory leaks
-   /* saveStringtoSettings("logPath", logFilePath);
+    saveStringtoSettings("logPath", logFilePath);
     saveStringtoSettings("sourceFolder", sourceFolderPath);
-    saveStringtoSettings("destinationFolder", destinationFolderPath);*/
+    saveStringtoSettings("destinationFolder", destinationFolderPath);
     event->accept();
 }
 
