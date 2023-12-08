@@ -212,6 +212,7 @@ void MainWindow::on_fbxFileTableWidget_itemSelectionChanged()
 
 void MainWindow::on_conversionPushButton_clicked()
 {
+    float count = 0;
     for(int i = 0 ; i < ui->fbxFileTableWidget->rowCount(); i++){
         if(ui->fbxFileTableWidget->item(i, 0)->isSelected()){
             std::string fullInPath;
@@ -238,7 +239,10 @@ void MainWindow::on_conversionPushButton_clicked()
             if(ui->replaceOriginalsCheckBox->isChecked()){
                 fullOutPath = fullInPath;
             }
-            FBXFormatConverter::convertFile(fullInPath, fullOutPath, true, format);
+            if(FBXFormatConverter::convertFile(fullInPath, fullOutPath, true, format) == 0){
+                count++;
+                ui->conversionProgressBar->setValue((count/(float)(ui->fbxFileTableWidget->selectedItems().count()/2))*100);
+            }
         }
     }
     populateTable();
