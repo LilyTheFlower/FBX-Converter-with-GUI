@@ -9,14 +9,13 @@ Logger::Logger(std::string directoryLocation){
     changeDirectory(directoryLocation);
 }
 
-int Logger::printLog(std::string logMessage){
+bool Logger::printLog(std::string logMessage){
     if(!logging){
-        return 0;
+        return true;
     }
     FILE* logFile = fopen(directoryLocation.c_str(), "a+");
     if(!logFile){
-        //failed to open the file, notify the user via gui
-        return -1;
+        return false;
     }
     //print to the log file
     if(logFile){
@@ -26,17 +25,26 @@ int Logger::printLog(std::string logMessage){
         msg.append("\n");
         fputs(msg.c_str(), logFile);
         fclose(logFile);
-        return 0;
+        return true;
     }
-    return -1;
+    return false;
 }
 
-void Logger::changeDirectory(std::string newDirectoryLocation){
+bool Logger::changeDirectory(std::string newDirectoryLocation){
     newDirectoryLocation.append("\\");
     std::string timeFileName = stringCurrentDateTime(false);
     timeFileName.append(".txt");
     newDirectoryLocation.append(timeFileName);
     directoryLocation = newDirectoryLocation;
+
+    //check to see if the directory is valid
+    FILE* f = fopen(directoryLocation.c_str(), "a+");
+    if(f){
+        fclose(f);
+        return true;
+    }else{
+        return false;
+    }
 }
 
 // Get current date/time, format is YYYY-MM-DD-HH-mm
@@ -50,8 +58,6 @@ std::string Logger::stringCurrentDateTime(bool includeSeconds) {
     }else{
         strftime(buf, sizeof(buf), "%Y-%m-%d-%H-%M", &tstruct);
     }
-
-
     return buf;
 }
 

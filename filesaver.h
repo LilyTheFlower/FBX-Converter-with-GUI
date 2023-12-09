@@ -15,7 +15,7 @@ public:
         int size;
     };
     fileSaver();
-    static int save(std::string file, void* data, int sizeOfData, std::string recordID);
+    static bool save(std::string file, void* data, int sizeOfData, std::string recordID);
     static record* read(std::string file, std::string recordID);
 
     static int findRecord(FILE* saveFile, std::string recordID);

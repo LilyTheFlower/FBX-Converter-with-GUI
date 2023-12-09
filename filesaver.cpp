@@ -6,7 +6,7 @@ fileSaver::fileSaver()
 
 }
 
-int fileSaver::save(std::string file, void* data, int sizeOfData, std::string recordID){
+bool fileSaver::save(std::string file, void* data, int sizeOfData, std::string recordID){
     FILE* saveFile = fopen(file.c_str(), "a+");
     if(!saveFile){
         //printf("failed to open the file, notify the user via gui\n");
@@ -40,7 +40,7 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
             fputc(c, saveFile);
         }
         fclose(saveFile);
-        return 1;
+        return true;
     }else if(search > -1){
         //record found, location is equal to where the size of the record begins
 
@@ -61,7 +61,7 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
             if(c == -1){
                 //error occured while reading since we know the record exists already
                 //printf("failed to read file, notify user via gui, send junk record\n");
-                return -1;
+                return false;
             }
             if(c!= delimiter){
                 readSize += c;
@@ -79,7 +79,7 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
         FILE* newFile = fopen(file.c_str(), "w+");
         if(!saveFile){
             //printf("failed to re-open the file, notify the user via gui\n");
-            return -1;
+            return false;
         }
 
         for(int i = 0; i < search - (((int)recordID.length())+1); i++){
@@ -101,15 +101,15 @@ int fileSaver::save(std::string file, void* data, int sizeOfData, std::string re
 
         free(after);
         fclose(newFile);
-        return 1;
+        return true;
     }else{
         //printf("error occured in searching the file for an existing record while saving the record");
         fclose(saveFile);
-        return -1;
+        return false;
     }
     //printf("Should never reach this place in save, something went really weird");
     fclose(saveFile);
-    return -1;
+    return false;
 }
 
 fileSaver::record* fileSaver::read(std::string file, std::string recordID){

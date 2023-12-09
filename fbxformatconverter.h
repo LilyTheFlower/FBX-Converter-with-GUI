@@ -3,7 +3,7 @@
 #include<string>
 #include <fbxsdk.h>
 #include <logger.h>
-
+#include <functional>
 class FBXFormatConverter
 {
     struct FBXFile{
@@ -17,14 +17,16 @@ public:
     };
 
     FBXFormatConverter();
-    static int convertFile(std::string sourceLocation, std::string destinationLocaiton, bool deleteOriginal, FBXFormat format);
+    static bool convertFile(std::string sourceLocation, std::string destinationLocaiton, bool deleteOriginal, FBXFormat format);
     static int isFBXFile(std::string sourceLocation);
     static FBXFormat checkFormat(std::string sourceLocation);
     static void enableFBXLogging(bool enable);
-    static void changeFBXLogDirectory(std::string newDirectory);
+    static bool changeFBXLogDirectory(std::string newDirectory);
+    static void getNotifyUserFunction(std::function<void()> notifyUser);
 private:
     static FbxScene* importFBX(std::string sourceLocation);
     static bool exportFBX(std::string destinationLocaiton, FbxScene* scene, FBXFormat format);
+
 };
 
 #endif // FBXFORMATCONVERTER_H

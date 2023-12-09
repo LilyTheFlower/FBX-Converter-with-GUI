@@ -1,8 +1,7 @@
 #include "fbxformatconverter.h"
 #include <fbxsdk.h>
 #include <logger.h>
-
-
+#include <functional>
 Logger* FBXLog;
 FbxManager* lSdkManager;
 FbxScene* nullScene;
@@ -10,6 +9,13 @@ FbxScene* nullScene;
 //default values, reconfigured later
 int binaryID;
 int asciiID;
+
+bool logPrintFailed = false;
+std::function<void()> notifyUserofLogError = [](){};
+
+void FBXFormatConverter::getNotifyUserFunction(std::function<void()> notifyUser){
+    notifyUserofLogError = notifyUser;
+}
 
 FBXFormatConverter::FBXFormatConverter(){
     FBXLog = new Logger("\\logs");
@@ -65,17 +71,35 @@ FbxScene* FBXFormatConverter::importFBX(std::string sourceLocation){
     bool lImportStatus = lImporter->Initialize(lFilename, -1, lSdkManager->GetIOSettings());
 
     if(!lImportStatus) {
-        FBXLog->printLog("Call to FbxImporter::Initialize() failed.\n");
+        if(!FBXLog->printLog("ERROR: Call to FbxImporter::Initialize() failed.\n")) logPrintFailed = true;
         char* error = new char[200];
         sprintf(error, "Error returned: %s\n\n", lImporter->GetStatus().GetErrorString());
-        FBXLog->printLog(error);
+        if(!FBXLog->printLog(error)) logPrintFailed = true;
+        if(logPrintFailed){
+            //notify user
+            notifyUserofLogError();
+            //reset flag
+            logPrintFailed = false;
+        }
         return nullScene;
     }
     // Create a new scene so it can be populated by the imported file.
     FbxScene* lScene = FbxScene::Create(lSdkManager,"conversionScene");
 
     // Import the contents of the file into the scene.
-    lImporter->Import(lScene);
+    if(!lImporter->Import(lScene)){
+        if(!FBXLog->printLog("ERROR: Call to FbxImporter::Import() failed.\n")) logPrintFailed = true;
+        char* error = new char[200];
+        sprintf(error, "Error returned: %s\n\n", lImporter->GetStatus().GetErrorString());
+        if(!FBXLog->printLog(error)) logPrintFailed = true;
+        if(logPrintFailed){
+            //notify user
+            notifyUserofLogError();
+            //reset flag
+            logPrintFailed = false;
+        }
+        return nullScene;
+    }
     // The file has been imported; we can get rid of the importer.
     lImporter->Destroy();
     return lScene;
@@ -99,7 +123,13 @@ bool FBXFormatConverter::exportFBX(std::string destinationLocaiton, FbxScene* sc
     }else if(format == FBXFormatConverter::binary){
         fileFormat = binaryID;
     }else{
-        FBXLog->printLog("unknown file format provided");
+        if(!FBXLog->printLog("unknown file format provided")) logPrintFailed = true;
+        if(logPrintFailed){
+            //notify user
+            notifyUserofLogError();
+            //reset flag
+            logPrintFailed = false;
+        }
         return false;
     }
     // Initialize the exporter.
@@ -108,22 +138,40 @@ bool FBXFormatConverter::exportFBX(std::string destinationLocaiton, FbxScene* sc
     //get the exporter status
     if(!lExportStatus) {
 
-        FBXLog->printLog("Call to FbxExporter::Initialize() failed.\n");
+        if(!FBXLog->printLog("ERROR: Call to FbxExporter::Initialize() failed.\n")) logPrintFailed = true;
         char* error = new char[200];
         sprintf(error, "Error returned: %s\n\n", lExporter->GetStatus().GetErrorString());
-        FBXLog->printLog(error);
+        if(!FBXLog->printLog(error)) logPrintFailed = true;
+        if(logPrintFailed){
+            //notify user
+            notifyUserofLogError();
+            //reset flag
+            logPrintFailed = false;
+        }
         return false;
     }
 
     // export the scene
-    lExporter->Export(scene);
+    if(!lExporter->Export(scene)){
+        if(!FBXLog->printLog("ERROR: Call to FbxExporter::Export() failed.\n")) logPrintFailed = true;
+        char* error = new char[200];
+        sprintf(error, "Error returned: %s\n\n", lExporter->GetStatus().GetErrorString());
+        if(!FBXLog->printLog(error)) logPrintFailed = true;
+        if(logPrintFailed){
+            //notify user
+            notifyUserofLogError();
+            //reset flag
+            logPrintFailed = false;
+        }
+        return false;
+    }
     // Destroy the exporter.
     lExporter->Destroy();
     return true;
 }
 
 
-int FBXFormatConverter::convertFile(std::string sourceLocation, std::string destinationLocaiton, bool deleteOriginal, FBXFormat format){
+bool FBXFormatConverter::convertFile(std::string sourceLocation, std::string destinationLocaiton, bool deleteOriginal, FBXFormat format){
     FbxScene* importedScene = importFBX(sourceLocation);
     if(importedScene != nullScene){
         //the import was successfull
@@ -133,7 +181,7 @@ int FBXFormatConverter::convertFile(std::string sourceLocation, std::string dest
         msg.append(" file from: ");
         msg.append(sourceLocation);
         //print the message to the log
-        FBXLog->printLog(msg);
+        if(!FBXLog->printLog(msg)) logPrintFailed = true;
     }else{
         //this means that an error occured in the import process, and the return is equal to the dummy nullScene as a result
 
@@ -150,8 +198,14 @@ int FBXFormatConverter::convertFile(std::string sourceLocation, std::string dest
             msg.append("unknown");
         }
         //print the message to the log
-        FBXLog->printLog(msg);
-        return -1;
+        if(!FBXLog->printLog(msg)) logPrintFailed = true;
+        if(logPrintFailed){
+            //notify user
+            notifyUserofLogError();
+            //reset flag
+            logPrintFailed = false;
+        }
+        return false;
     }
 
     if(exportFBX(destinationLocaiton, importedScene, format)){
@@ -166,7 +220,7 @@ int FBXFormatConverter::convertFile(std::string sourceLocation, std::string dest
         }
         msg.append(" to: ");
         msg.append(destinationLocaiton);
-        FBXLog->printLog(msg);
+        if(!FBXLog->printLog(msg)) logPrintFailed = true;
     }else{
         //there was an error exporting
 
@@ -183,10 +237,22 @@ int FBXFormatConverter::convertFile(std::string sourceLocation, std::string dest
             msg.append("unknown");
         }
         //print the message to the log
-        FBXLog->printLog(msg);
-        return -1;
+        if(!FBXLog->printLog(msg)) logPrintFailed = true;
+        if(logPrintFailed){
+            //notify user
+            notifyUserofLogError();
+            //reset flag
+            logPrintFailed = false;
+        }
+        return false;
     }
-    return 0;
+    if(logPrintFailed){
+        //notify user
+        notifyUserofLogError();
+        //reset flag
+        logPrintFailed = false;
+    }
+    return true;
 }
 
 
@@ -201,14 +267,26 @@ int FBXFormatConverter::isFBXFile(std::string sourceLocation){
         msg.append("Verified file at: ");
         msg.append(sourceLocation);
         msg.append(" as FBX");
-        FBXLog->printLog(msg);
+        if(!FBXLog->printLog(msg)) logPrintFailed = true;
+        if(logPrintFailed){
+            //notify user
+            notifyUserofLogError();
+            //reset flag
+            logPrintFailed = false;
+        }
         return formatID;
     }
     std::string msg = "";
     msg.append("FAILED TO DETECT FILE FORMAT. Source Location:  ");
     msg.append(sourceLocation);
     msg.append(" Aborting import process...");
-    FBXLog->printLog(msg);
+    if(!FBXLog->printLog(msg)) logPrintFailed = true;
+    if(logPrintFailed){
+        //notify user
+        notifyUserofLogError();
+        //reset flag
+        logPrintFailed = false;
+    }
     return -1;
 }
 
@@ -225,7 +303,13 @@ FBXFormatConverter::FBXFormat FBXFormatConverter::checkFormat(std::string source
                 msg.append("Identified file at: ");
                 msg.append(sourceLocation);
                 msg.append(" as binary FBX");
-                FBXLog->printLog(msg);
+                if(!FBXLog->printLog(msg)) logPrintFailed = true;
+                if(logPrintFailed){
+                    //notify user
+                    notifyUserofLogError();
+                    //reset flag
+                    logPrintFailed = false;
+                }
                 return FBXFormatConverter::binary;
             }
         }while(c!= EOF);
@@ -233,12 +317,24 @@ FBXFormatConverter::FBXFormat FBXFormatConverter::checkFormat(std::string source
         msg.append("Identified file at: ");
         msg.append(sourceLocation);
         msg.append(" as ascii FBX");
-        FBXLog->printLog(msg);
+        if(!FBXLog->printLog(msg)) logPrintFailed = true;
+        if(logPrintFailed){
+            //notify user
+            notifyUserofLogError();
+            //reset flag
+            logPrintFailed = false;
+        }
         return FBXFormatConverter::ascii;
     }else{
-        msg.append("UNKNOWN FBX FILE AT: ");
+        msg.append("ERROR: UNKNOWN FBX FILE AT: ");
         msg.append(sourceLocation);
-        FBXLog->printLog(msg);
+        if(!FBXLog->printLog(msg)) logPrintFailed = true;
+        if(logPrintFailed){
+            //notify user
+            notifyUserofLogError();
+            //reset flag
+            logPrintFailed = false;
+        }
         return FBXFormatConverter::unknown;
     }
 }
@@ -247,6 +343,7 @@ void FBXFormatConverter::enableFBXLogging(bool enable){
     FBXLog->enableLogging(enable);
 }
 
-void FBXFormatConverter::changeFBXLogDirectory(std::string newDirectory){
-    FBXLog->changeDirectory(newDirectory);
+bool FBXFormatConverter::changeFBXLogDirectory(std::string newDirectory){
+    return FBXLog->changeDirectory(newDirectory);
 }
+

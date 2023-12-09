@@ -12,8 +12,8 @@ class Logger
     bool logging = false;
 public:
     Logger(std::string directoryLocation);
-    int printLog(std::string logMessage);
-    void changeDirectory(std::string newDirectoryLocation);
+    bool printLog(std::string logMessage);
+    bool changeDirectory(std::string newDirectoryLocation);
     void enableLogging(bool enabled);
 };
 

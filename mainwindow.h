@@ -13,8 +13,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    bool notifyUser();
-
 private slots:
     void on_sourceFolderPushButton_clicked();
 
@@ -38,6 +36,8 @@ private slots:
     void on_fbxFileTableWidget_itemSelectionChanged();
 
     void on_conversionPushButton_clicked();
+
+    static void onPrintLogFailure();
 
 private:
     Ui::MainWindow *ui;
