@@ -36,3 +36,8 @@ else:unix: LIBS += -L$$PWD/'../../../../../Program Files/Autodesk/FBX/FBX SDK/20
 
 INCLUDEPATH += $$PWD/'../../../../../Program Files/Autodesk/FBX/FBX SDK/2020.3.4/include'
 DEPENDPATH += $$PWD/'../../../../../Program Files/Autodesk/FBX/FBX SDK/2020.3.4/include'
+
+RESOURCES += \
+    ImageResources.qrc
+
+RC_ICONS = FBX_ico_3.ico

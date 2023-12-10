@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>FBX_ico_3.ico</file>
+    </qresource>
+</RCC>
