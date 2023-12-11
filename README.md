@@ -36,7 +36,7 @@ This project uses three classes I will soon be putting on my github as libraries
 
 ## Why did I make this?:  
 There are many tools like this one, but all I have seen use a command line  
-interface. That is fine for people who are used to such an interface, like  
+interface. That is fine for people who are comfortable with such an interface, like  
 programmers, but I wanted to create an interface friendly to artists and  
 designers who werent comfortable with that interface. I also feel this interface  
 facilitates simpler directory selection.  
