@@ -14,7 +14,7 @@ A GUI program to convert between binary and ascii FBX using the FBX sdk and Qt
 3.The table will fill with fbx files located in the source directory and label them as ascii or binary
 4.Select a number of files, holding ctrl will allow you to select multiple or use the selection tool
 5.To choose the format to convert to use the drop down at the bottom of the window to choose ascii or binary
-5.Push the convert button and the conversion will begin, new files will be placed in the destination directory with an altered name if replace originals is not selected.
+6.Push the convert button and the conversion will begin, new files will be placed in the destination directory with an altered name if replace originals is not selected.
 
 ## Build Requirements:
 To build this project you need to have: 
